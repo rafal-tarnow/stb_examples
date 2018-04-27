@@ -1,0 +1,15 @@
+*pro.user*
+*pro.user
+build-*/
+**/build-*/
+
+Błąd-*/
+**/Błąd-*/
+
+.~lock.
+.~lock.*.odt#
+*.odt#
+
+CMakeLists.txt.user
+
+gource_output/
