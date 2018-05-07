@@ -19,6 +19,8 @@ void DE_initRectangle(DE_Rectangle * rectangle, glm::vec4  & colour, GLfloat wid
 void DE_initRectangle(DE_Rectangle * rectangle, glm::vec4 colour, GLfloat x_top_left, GLfloat y_top_left, GLfloat x_bottom_right, GLfloat y_bottom_right, GLfloat z = 0.0f);
 
 
+void DE_setColourRectangle(DE_Rectangle * rectangle, glm::vec4 colour);
+void DE_setDimRectangle(DE_Rectangle * rectangle,float x, float y, float width, float height);
 void DE_drawRectangle(DE_Rectangle * rectangle);
 
 void DE_deleteRectangle(DE_Rectangle * rectangle);

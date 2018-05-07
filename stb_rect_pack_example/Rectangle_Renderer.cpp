@@ -46,7 +46,7 @@ static GLuint prepareVBO(const GLfloat * data, GLsizeiptr size){
 
     glGenBuffers(1,&vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     return vbo;
@@ -145,7 +145,40 @@ void DE_initRectangle(DE_Rectangle * rectangle, glm::vec4 colour, GLfloat x_top_
     rectangle->vbo_id = prepareVBO(rectangle_vertices, sizeof(rectangle_vertices));
 }
 
+void DE_setColourRectangle(DE_Rectangle * rectangle, glm::vec4 colour)
+{
+    rectangle->colour = colour;
 
+    glUseProgram(shader_program);
+    {
+        glUniform4fv(colorLocation, 1, (const GLfloat *)glm::value_ptr(rectangle->colour));
+    }
+    glUseProgram(0);
+}
+
+void DE_setDimRectangle(DE_Rectangle * rectangle, float x_pos, float y_pos, float width, float height)
+{
+    //TOP RIGHT VERTICES
+    rectangle_vertices[0] = x_pos + width;
+    rectangle_vertices[1] = y_pos + height;
+    rectangle_vertices[2] = 0.0f;
+    //BOTTOM RIGHT VERTICES
+    rectangle_vertices[5] = x_pos + width;
+    rectangle_vertices[6] = y_pos;
+    rectangle_vertices[7] = 0.0f;
+    //BOTTOM LEFT VERTICES
+    rectangle_vertices[10] = x_pos;
+    rectangle_vertices[11] = y_pos;
+    rectangle_vertices[12] = 0.0f;
+    //TOP LEFT VERTICES
+    rectangle_vertices[15] = x_pos;
+    rectangle_vertices[16] = y_pos + height;
+    rectangle_vertices[17] = 0.0f;
+
+    glBindBuffer(GL_ARRAY_BUFFER, rectangle->vbo_id);
+    glBufferSubData(GL_ARRAY_BUFFER, 0,  sizeof(rectangle_vertices), rectangle_vertices);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
 void DE_drawRectangle(DE_Rectangle * rectangle){
     glUseProgram(shader_program);
@@ -153,7 +186,6 @@ void DE_drawRectangle(DE_Rectangle * rectangle){
         glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(rectangle->projection));
         glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(rectangle->view));
         glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(rectangle->model));
-        glUniform4fv(colorLocation, 1, (const GLfloat *)glm::value_ptr(rectangle->colour));
 
         glBindBuffer(GL_ARRAY_BUFFER, rectangle->vbo_id);
         {
